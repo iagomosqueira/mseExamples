@@ -24,5 +24,5 @@ install.packages(c("mse"), repos=structure(c(CRAN="https://cloud.r-project.org/"
 If you find nay problem please install the latest version of packages from github, changes are being made as these examples are developed.
 
 ```
-remotes::install_github(paste("flr", c("FLCore", "FLFishery", "FLasher", "mse")))
+remotes::install_github(paste("flr", c("FLCore", "FLFishery", "FLasher", "mse"), sep="/"))
 ```
