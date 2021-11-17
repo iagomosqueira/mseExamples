@@ -7,6 +7,7 @@
 # Distributed under the terms of the EUPL-1.2
 
 # NOTE - Example currently runs on mse listModules branch, install using:
+# remotes::install_github("flr/FLFishery")
 # remotes::install_github("flr/mse", ref="listModules")
 
 
@@ -37,7 +38,9 @@ system.time(tes <- mp(om, oem=oem, ctrl=control, args=mseargs))
 plot(biols(om(tes)))
 plot(fisheries(om(tes))[[1]])
 
-# DEBUG WHY large F on ple at end?
-plot(fbar(biols(om(tes))[[1]], fisheries(om(tes))),
-  fbar(biols(om(tes))[[2]], fisheries(om(tes))))
+# Fbar
 
+plot(FLQuants(
+  PLE=fbar(biols(om(tes))[[1]], fisheries(om(tes)), minfbar=1, maxfbar=6, fcb=1),
+  SOL=fbar(biols(om(tes))[[2]], fisheries(om(tes))[[1]], minfbar=1, maxfbar=6, fcb=2)
+))
