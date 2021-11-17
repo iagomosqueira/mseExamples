@@ -11,7 +11,7 @@ library(mse)
 
 # ICES SA datasets
 
-load("data/ices_sas.RData")
+load("boot/ices_sas.RData")
 
 plot(ple, sol)
 
@@ -33,8 +33,11 @@ solsr <- srrTMB(as.FLSR(sol, model=bevholtSV), spr0=spr0y(sol))
 plot(plesr)
 plot(solsr)
 
-rec(pleb) <- plesr
-rec(solb) <- solsr
+rec(pleb) <- predictModel(FLQuants(residuals=exp(residuals(plesr))),
+  model=bevholt()$model, params=params(plesr))
+
+rec(solb) <- predictModel(FLQuants(residuals=exp(residuals(solsr))),
+  model=bevholt()$model, params=params(solsr))
 
 plot(FLQuants(PLE=exp(residuals(plesr)), SOL=exp(residuals(solsr)))) +
   geom_hline(yintercept=1, linetype=2)
@@ -56,53 +59,21 @@ dimnames(eff) <- list(effort='all')
 
 bt <- FLFishery(effort=eff, PLE=plec, SOL=solc)
 
-# --- TEST fwd(ple)
-
-ctrl <- fwdControl(            
-list(year=1958:2020, quant="catch", value=catch(plec)[,-1], fishery=1, catch=1)
-)
-
-hindp <- fwd(FLBiols(PLE=pleb, SOL=solb), bt, control=ctrl,
-  deviances=FLQuants(PLE=exp(residuals(plesr)), SOL=exp(residuals(solsr))))
-
-plot(catch(hindp$fisheries[[1]]), catch(plec))
-plot(catch(hindp$fisheries[[2]]), catch(solc))
-
-plot(
-ssb(hindp$biols[[1]], catch.n=catch.n(hindp$fisheries[[1]])),
-ssb(ple)
-)
-
-# FWD(sol)
-
-ctrl <- fwdControl(            
-list(year=1958:2020, quant="catch", value=catch(solc)[,-1], fishery=1, catch=2)
-)
-
-hinds <- fwd(FLBiols(PLE=pleb, SOL=solb), bt, control=ctrl,
-  deviances=FLQuants(PLE=residuals(plesr), SOL=residuals(solsr)))
-
-plot(hinds$biols)
-
-plot(catch(hinds$fisheries[[1]]), catch(plec))
-plot(catch(hinds$fisheries[[2]]), catch(solc))
-
-effort(hinds$fisheries)
-
-# refpts
-
-
 # OM: biols + fishery + refpts
 
 om <- FLombf(biols=FLBiols(PLE=pleb, SOL=solb), fisheries=FLFisheries(BT=bt),
   projection=mseCtrl(method=fwd.om))
 
+om <- fwdWindow(om, end=2040)
+
 # OEM
 
 oem <- FLoem(method=perfect.oem,
-  observations=list(stk=FLStocks(PLE=ple, SOL=sol))
+  observations=list(PLE=list(stk=stf(ple, end=2040)),
+  SOL=list(stk=stf(ple, end=2040)))
 )
 
 # SAVE
 
 save(om, oem, file="data/plesol.RData", compress="xz")
+
