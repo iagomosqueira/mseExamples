@@ -7,13 +7,14 @@
 # Distributed under the terms of the EUPL-1.2
 
 # NOTE - Example currently runs on mse listModules branch, install using:
-
 # remotes::install_github("flr/mse", ref="listModules")
 
 
 library(mse)
 
 load('data/plesol.RData')
+
+# SET intermediate year and stock on which hcr applies
 
 mseargs <- list(iy=2020, stock=1)
 
@@ -33,9 +34,10 @@ system.time(tes <- mp(om, oem=oem, ctrl=control, args=mseargs))
 
 # PLOT TODO REWRITE plot(FLombf, FLmse)
 
-plot(biols(om(hind)))
-plot(fisheries(om(hind))[[1]])
+plot(biols(om(tes)))
+plot(fisheries(om(tes))[[1]])
 
-plot(fbar(biols(om(hind))[[1]], fisheries(om(hind))),
-  fbar(biols(om(hind))[[2]], fisheries(om(hind))))
+# DEBUG WHY large F on ple at end?
+plot(fbar(biols(om(tes))[[1]], fisheries(om(tes))),
+  fbar(biols(om(tes))[[2]], fisheries(om(tes))))
 
