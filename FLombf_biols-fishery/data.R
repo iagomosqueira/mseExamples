@@ -15,6 +15,11 @@ load("boot/ices_sas.RData")
 
 plot(ple, sol)
 
+units(m(ple)) <- units(m(sol)) <- "m"
+units(mat(ple)) <- units(mat(sol)) <- ""
+units(m.spwn(ple)) <- units(m.spwn(sol)) <- ""
+units(harvest.spwn(ple)) <- units(harvest.spwn(sol)) <- ""
+
 # COERCE to FLBiol
 
 pleb <- as(ple, 'FLBiol')
