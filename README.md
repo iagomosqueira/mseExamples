@@ -14,14 +14,7 @@ NOTE: This is work in progress, aiming at developing fairly clean code for the d
 
 ## INSTALLATION
 
-These examples should work with the latest released version of FLR (for R 4.1), installed using
-
-```
-install.packages(c("mse"), repos=structure(c(CRAN="https://cloud.r-project.org/",
-  FLR="https://flr-project.org/R")))
-```
-
-If you find nay problem please install the latest version of packages from github, changes are being made as these examples are developed.
+These examples are being developed to work with the development version of mse. Please install it using
 
 ```
 remotes::install_github(paste("flr", c("FLCore", "FLFishery", "FLasher", "mse"), sep="/"))

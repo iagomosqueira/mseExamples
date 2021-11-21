@@ -7,7 +7,6 @@
 # Distributed under the terms of the EUPL-1.2
 
 
-
 tom <- FLom(stock=stf(ple, end=2040), sr=plesr, projection=mseCtrl(method=fwd.om))
 
 toem <- FLoem(method=perfect.oem, observations=list(stk=window(ple, end=2040)))
