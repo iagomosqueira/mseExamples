@@ -42,6 +42,22 @@ trend2y <- mp(om, oem=oem, ctrl=control, args=list(iy=2020, frq=2))
 plot(window(om, start=2000), TREND=trend, TREND2Y=trend2y)
 
 
+# --- RUN mean length indicator + target level HCR
+
+control <- mpCtrl(list(
+  # perfect.sa
+  est = mseCtrl(method=len.ind, args=list(indicator="mlc",
+    params=FLPar(linf=35, k=0.352, t0=-0.26), cv=0.2)),
+  # CCSBT trend HCR
+  hcr = mseCtrl(method=target.hcr,
+    args=list(lim=15, target=20, metric="mlc"))
+  ))
+
+length <- mp(om, oem=oem, ctrl=control, args=mseargs)
+
+plot(om, length)
+
+
 # --- APPLY ICES HCR and TAC short-term forecast
 
 # control: perfect.sa + ices.hcr + tac.is
@@ -51,7 +67,7 @@ control <- mpCtrl(list(
   est = mseCtrl(method=perfect.sa),
   # ICES HCR
   hcr = mseCtrl(method=ices.hcr,
-    args=list(ftrg=c(refpts(om)$Fmsy), sblim=c(refpts(om)$SBlim),
+    args=list(ftrg=c(refpts(om)$Fmsy)*0.85, sblim=c(refpts(om)$SBlim),
       sbsafe=c(refpts(om)$Bpa))),
   # One-year forecast for TAC
   isys=mseCtrl(method=tac.is, args=list(dtaclow=0.85, dtacupp=1.15, recyrs=30))
@@ -63,7 +79,7 @@ ices <- mp(om, oem=oem, ctrl=control, args=mseargs)
 
 # PLOT
 
-plot(om, TREND=trend ICES=ices)
+plot(om, TREND=trend, ICES=ices)
 
 
 # --- RUN FLa4a ICES HCR and TAC short-term forecast
@@ -104,7 +120,7 @@ scamp <- mp(om, oem=oem, ctrl=control, args=mseargs)
 
 # PLOT
 
-plot(om, TREND=trend ICES=ices, SCA=scamp)
+plot(om, TREND=trend, ICES=ices, SCA=scamp)
 
 # TRACKING
 
