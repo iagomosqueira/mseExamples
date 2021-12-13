@@ -74,9 +74,19 @@ om <- fwdWindow(om, end=2040)
 # OEM
 
 oem <- FLoem(method=perfect.oem,
-  observations=list(PLE=list(stk=stf(ple, end=2040)),
-  SOL=list(stk=stf(ple, end=2040)))
-)
+  observations=list(
+    PLE=list(stk=stf(ple, end=2040),
+      idx=FLIndices(BTS=as(stf(ple, end=2040), 'FLIndex'))),
+    SOL=list(stk=stf(sol, end=2040),
+      idx=FLIndices(BTS=as(stf(ple, end=2040), 'FLIndex')))),
+  deviances=list(
+    PLE=list(
+      stk=list(
+        catch.n=window(catch.n(ple), end=2040) %=% rlnorm(dim(ple)[1], 0, 0.2))),
+    SOL=list(
+      stk=list(
+        catch.n=window(catch.n(sol), end=2040) %=% rlnorm(dim(sol)[1], 0, 0.2)))
+  ))
 
 # SAVE
 
